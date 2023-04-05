@@ -10,7 +10,8 @@ const {
 } = require("./functions");
 
 // SOME CONSTANTS
-const HEAD_CHANNEL = process.env.HEAD_CHANNEL;
+const HEAD_CHANNEL = process.env.HEAD_CHANNEL.toString();
+const OWNER_ID = process.env.OWNER_ID.toString();
 
 // Create a new client instance
 const client = new Client({
@@ -36,32 +37,22 @@ client.login(process.env.TOKEN);
 // do functions based on messages
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
-  if (message.content == "hi") return message.reply("hi");
+  if (message.author.id !== OWNER_ID) return;
   if (message.channelId == HEAD_CHANNEL) {
     if (message.attachments.size > 0) {
       message.attachments.forEach(async function (attachment) {
-        for (const id of follower) {
-          const channel = client.channels.cache.get(id.toString());
-          channel.send(attachment.url);
-        }
+        SendAllChannels(attachment.url, client);
       });
     }
   }
-
   switch (message.content) {
     case "meow help":
       return message.reply(
         `use \`meow add this\` to receive memes, \`meow remove this\` to stop receiving memes.`
       );
     case "meow add this":
-      return AddFollower(message.channelId)
-        ? message.reply("Added " + message.channel.name + " to follower list.")
-        : message.reply("Failed to add channel to follower list");
+      return AddFollower(message.channelId, message);
     case "meow remove this":
-      return RemoveFollower(message.channelId)
-        ? message.reply(
-            "Removed " + message.channel.name + " from follower list."
-          )
-        : message.reply("Failed to remove channel from follower list");
+      return RemoveFollower(message.channelId, message);
   }
 });
