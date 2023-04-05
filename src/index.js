@@ -2,16 +2,15 @@ const { Client, Events, GatewayIntentBits, Partials } = require("discord.js");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const {
-  follower,
-  AddFollower,
-  RemoveFollower,
-  SendAllChannels,
-} = require("./functions");
+const { HandleChannelMessages } = require("./ChannelFunctions");
+const { HandleDmMessages } = require("./DmFunctions");
+const { HandleNewMeme } = require("./OwnerFunctions");
 
 // SOME CONSTANTS
 const HEAD_CHANNEL = process.env.HEAD_CHANNEL.toString();
 const OWNER_ID = process.env.OWNER_ID.toString();
+const CHANNEL_TYPE = 0;
+const DM_TYPE = 1;
 
 // Create a new client instance
 const client = new Client({
@@ -37,22 +36,16 @@ client.login(process.env.TOKEN);
 // do functions based on messages
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
+  // dm functions are available to anyone
+  if (message.channel.type == DM_TYPE) {
+    HandleDmMessages(message);
+  }
+  // remaining functions need Authorization of Owner
   if (message.author.id !== OWNER_ID) return;
   if (message.channelId == HEAD_CHANNEL) {
-    if (message.attachments.size > 0) {
-      message.attachments.forEach(async function (attachment) {
-        SendAllChannels(attachment.url, client);
-      });
-    }
+    return HandleNewMeme(message, client);
   }
-  switch (message.content) {
-    case "meow help":
-      return message.reply(
-        `use \`meow add this\` to receive memes, \`meow remove this\` to stop receiving memes.`
-      );
-    case "meow add this":
-      return AddFollower(message.channelId, message);
-    case "meow remove this":
-      return RemoveFollower(message.channelId, message);
+  if (message.channel.type == CHANNEL_TYPE) {
+    return HandleChannelMessages(message);
   }
 });
