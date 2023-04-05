@@ -10,20 +10,20 @@ Run the following commands
 ```console
 $ git clone git@github.com:HARI-PRMD/meme-sharing-discord-bot.git
 $ cd meme-sharing-discord-bot
-$ npm install
 ```
 
 Create a `.env` file with the following environment variables
 
 ```.env
 TOKEN=insert_your_bot_token_here
-HEAD_CHANNEL=insert_head_channel_from_which_you_want_memes_posted_everywhere
+HEAD_CHANNEL=insert_head_channel_id_from_which_you_want_memes_posted_everywhere
 OWNER_ID=insert_your_user_id_here
 ```
 
 Then run the following command to start the bot server
 
 ```console
+$ npm install
 $ npm run start
 ```
 
