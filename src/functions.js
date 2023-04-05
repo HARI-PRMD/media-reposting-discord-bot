@@ -1,13 +1,13 @@
 const follower = [];
 
-function addFollower(channelId) {
-  if (follower.includes(channelId)) return false;
-
-  follower.push(channelId);
+function AddFollower(channelId) {
+  if (follower.includes(channelId.toString())) return false;
+  console.log("added id: " + channelId);
+  follower.push(channelId.toString());
   return true;
 }
 
-function removeFollower(channelId) {
+function RemoveFollower(channelId) {
   if (!follower.includes(channelId)) return false;
   for (let i = 0; i < follower.length; i++) {
     if (follower[i] == channelId) {
@@ -15,14 +15,22 @@ function removeFollower(channelId) {
       return true;
     }
   }
+  console.log("removed id: " + channelId);
   return true;
 }
 
-function SendAllChannels(CdnUrl) {
+async function SendAllChannels(ImageUrl, client) {
+  if ((ImageUrl = undefined)) return false;
+  for (const id in follower) {
+    const channel = client.channels.cache.get(id);
+    if (channel !== undefined) channel.send(ImageUrl);
+  }
   return true;
 }
 
 module.exports = {
-  addFollower,
-  removeFollower,
+  follower,
+  AddFollower,
+  RemoveFollower,
+  SendAllChannels,
 };
