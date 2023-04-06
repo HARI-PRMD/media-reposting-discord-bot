@@ -1,4 +1,4 @@
-const followerDMs = [];
+const { GetAllIds, AppendId, RemoveId } = require("./DataFunctions");
 
 function HandleDmMessages(message) {
   switch (message.content) {
@@ -12,30 +12,22 @@ function HandleDmMessages(message) {
       return RemoveFollowerDm(message.channelId, message);
   }
 }
+
 function AddFollowerDm(userId, message) {
-  if (followerDMs.includes(userId.toString()))
-    return message.reply("Failed to add you to follower list");
+  AppendId("dms", userId);
   console.log("added id: " + userId);
-  followerDMs.push(userId.toString());
   return message.reply("Added you to follower list.");
 }
 
 function RemoveFollowerDm(userId, message) {
-  if (!followerDMs.includes(userId))
-    return message.reply("Failed to remove you from follower list");
-  for (let i = 0; i < followerDMs.length; i++) {
-    if (followerDMs[i] == userId) {
-      followerDMs.splice(i);
-      console.log("removed id: " + userId);
-      return message.reply("Removed you from follower list.");
-    }
-  }
-  return message.reply("Failed to remove you from follower list");
+  RemoveId("dms", userId);
+  return message.reply("Removed you from follower list.");
 }
 
-function SendAllDms(ImageUrl, client) {
+async function SendAllDms(ImageUrl, client) {
   if (ImageUrl == undefined) return false;
-  for (const id of followerDMs) {
+  const allDms = await GetAllIds("dms");
+  for (const id of allDms) {
     const user = client.users.cache.get(id);
     if (user !== undefined) user.send(ImageUrl);
   }
