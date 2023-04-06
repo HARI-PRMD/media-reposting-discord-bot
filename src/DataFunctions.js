@@ -53,7 +53,7 @@ function RemoveId(table, id) {
       console.log(err.message);
     }
     // id value exists in the table
-    if (row.count == 0) {
+    if (row.count != 0) {
       database.run(removeSql, [id], (err) => {
         if (err) {
           console.log(err.message);
