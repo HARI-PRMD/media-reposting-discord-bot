@@ -1,4 +1,4 @@
-const { GetAllIds, GetDb, AppendId, RemoveId } = require("./DataFunctions");
+const { GetAllIds, AppendId, RemoveId } = require("./DataFunctions");
 
 function HandleDmMessages(message) {
   switch (message.content) {
@@ -13,23 +13,20 @@ function HandleDmMessages(message) {
   }
 }
 
-async function AddFollowerDm(userId, message) {
-  const db = await GetDb();
-  await AppendId(db, "dms", userId);
+function AddFollowerDm(userId, message) {
+  AppendId("dms", userId);
   console.log("added id: " + userId);
   return message.reply("Added you to follower list.");
 }
 
-async function RemoveFollowerDm(userId, message) {
-  const db = await GetDb();
-  await RemoveId(db, "dms", userId);
+function RemoveFollowerDm(userId, message) {
+  RemoveId("dms", userId);
   return message.reply("Removed you from follower list.");
 }
 
 async function SendAllDms(ImageUrl, client) {
   if (ImageUrl == undefined) return false;
-  const db = await GetDb();
-  const allDms = await GetAllIds(db, "dms");
+  const allDms = await GetAllIds("dms");
   for (const id of allDms) {
     const user = client.users.cache.get(id);
     if (user !== undefined) user.send(ImageUrl);

@@ -1,4 +1,4 @@
-const { RemoveId, AppendId, GetAllIds, GetDb } = require("./DataFunctions");
+const { RemoveId, AppendId, GetAllIds } = require("./DataFunctions");
 
 function HandleChannelMessages(message) {
   switch (message.content) {
@@ -13,15 +13,13 @@ function HandleChannelMessages(message) {
   }
 }
 
-async function AddFollowerChannel(channelId, message) {
-  let db = await GetDb();
-  await AppendId(db, "channels", channelId);
+function AddFollowerChannel(channelId, message) {
+  AppendId("channels", channelId);
   return message.reply("Added #" + message.channel.name + " to follower list.");
 }
 
-async function RemoveFollowerChannel(channelId, message) {
-  let db = await GetDb();
-  await RemoveId(db, "channels", channelId);
+function RemoveFollowerChannel(channelId, message) {
+  RemoveId("channels", channelId);
   return message.reply(
     "Removed #" + message.channel.name + " from follower list."
   );
@@ -29,9 +27,7 @@ async function RemoveFollowerChannel(channelId, message) {
 
 async function SendAllChannels(ImageUrl, client) {
   if (ImageUrl == undefined) return false;
-  const db = await GetDb();
-  const allChannels = await GetAllIds(db, "channels");
-
+  const allChannels = await GetAllIds("channels");
   for (const id of allChannels) {
     const channel = client.channels.cache.get(id);
     if (channel !== undefined) channel.send(ImageUrl);

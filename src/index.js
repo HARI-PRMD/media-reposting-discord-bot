@@ -5,16 +5,7 @@ dotenv.config();
 const { HandleChannelMessages } = require("./ChannelFunctions");
 const { HandleDmMessages } = require("./DmFunctions");
 const { HandleNewMeme } = require("./OwnerFunctions");
-const {
-  test,
-  db,
-  GetDb,
-  InitTables,
-  AppendId,
-  RemoveId,
-  GetAllIds,
-  CloseDb,
-} = require("./DataFunctions");
+const { database, InitTables } = require("./DataFunctions");
 
 // SOME CONSTANTS
 const HEAD_CHANNEL = process.env.HEAD_CHANNEL.toString();
@@ -35,24 +26,15 @@ const client = new Client({
 });
 
 async function initialize() {
-  const db = new sqlite3.Database(
-    "../data/discord.db",
-    sqlite3.OPEN_READWRITE,
-    (err) => {
-      if (err) {
-        return console.error(err.message);
-      }
-      console.log("Connected to the discord.db database");
-    }
-  );
-  await InitTables(db);
+  console.log(database);
+  InitTables();
 }
 
 // When the client is ready, run this code (only once)
 // We use 'c' for the event parameter to keep it separate from the already defined 'client'
 client.once(Events.ClientReady, async (c) => {
   // initialize db and tables
-  await initialize();
+  initialize();
   console.log(`Ready! Logged in as ${c.user.tag}`);
 });
 
