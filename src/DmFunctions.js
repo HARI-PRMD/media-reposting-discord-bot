@@ -12,23 +12,24 @@ function HandleDmMessages(message) {
       return RemoveFollowerDm(message.channelId, message);
   }
 }
-function AddFollowerDm(userId, message) {
-  const db = GetDb();
-  AppendId(db, "dms", userId);
+
+async function AddFollowerDm(userId, message) {
+  const db = await GetDb();
+  await AppendId(db, "dms", userId);
   console.log("added id: " + userId);
   return message.reply("Added you to follower list.");
 }
 
-function RemoveFollowerDm(userId, message) {
-  const db = GetDb();
-  RemoveId(db, "dms", userId);
+async function RemoveFollowerDm(userId, message) {
+  const db = await GetDb();
+  await RemoveId(db, "dms", userId);
   return message.reply("Removed you from follower list.");
 }
 
-function SendAllDms(ImageUrl, client) {
+async function SendAllDms(ImageUrl, client) {
   if (ImageUrl == undefined) return false;
-  const db = GetDb();
-  const allDms = GetAllIds(db, "dms");
+  const db = await GetDb();
+  const allDms = await GetAllIds(db, "dms");
   for (const id of allDms) {
     const user = client.users.cache.get(id);
     if (user !== undefined) user.send(ImageUrl);

@@ -6,6 +6,8 @@ const { HandleChannelMessages } = require("./ChannelFunctions");
 const { HandleDmMessages } = require("./DmFunctions");
 const { HandleNewMeme } = require("./OwnerFunctions");
 const {
+  test,
+  db,
   GetDb,
   InitTables,
   AppendId,
@@ -32,13 +34,25 @@ const client = new Client({
   ],
 });
 
+async function initialize() {
+  const db = new sqlite3.Database(
+    "../data/discord.db",
+    sqlite3.OPEN_READWRITE,
+    (err) => {
+      if (err) {
+        return console.error(err.message);
+      }
+      console.log("Connected to the discord.db database");
+    }
+  );
+  await InitTables(db);
+}
+
 // When the client is ready, run this code (only once)
 // We use 'c' for the event parameter to keep it separate from the already defined 'client'
-client.once(Events.ClientReady, (c) => {
+client.once(Events.ClientReady, async (c) => {
   // initialize db and tables
-  InitTables(GetDb());
-  console.log(`Initialized Db`);
-
+  await initialize();
   console.log(`Ready! Logged in as ${c.user.tag}`);
 });
 
