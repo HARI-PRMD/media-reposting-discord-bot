@@ -27,4 +27,9 @@ $ npm install
 $ npm run start
 ```
 
+## ✨ Extra Notes
+
+- `npm run start` will automatically create and initialize an sqlite3 database in `/data/discord.db` upon running for the first time.
+- Data is persistent, delete `discord.db` file and run the program again if you wish to refresh the data.
+
 Happy Meme Reposting 🥳
