@@ -5,6 +5,14 @@ dotenv.config();
 const { HandleChannelMessages } = require("./ChannelFunctions");
 const { HandleDmMessages } = require("./DmFunctions");
 const { HandleNewMeme } = require("./OwnerFunctions");
+const {
+  GetDb,
+  InitTables,
+  AppendId,
+  RemoveId,
+  GetAllIds,
+  CloseDb,
+} = require("./DataFunctions");
 
 // SOME CONSTANTS
 const HEAD_CHANNEL = process.env.HEAD_CHANNEL.toString();
@@ -27,6 +35,10 @@ const client = new Client({
 // When the client is ready, run this code (only once)
 // We use 'c' for the event parameter to keep it separate from the already defined 'client'
 client.once(Events.ClientReady, (c) => {
+  // initialize db and tables
+  InitTables(GetDb());
+  console.log(`Initialized Db`);
+
   console.log(`Ready! Logged in as ${c.user.tag}`);
 });
 
