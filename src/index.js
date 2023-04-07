@@ -12,6 +12,7 @@ const HEAD_CHANNEL = process.env.HEAD_CHANNEL.toString();
 const OWNER_ID = process.env.OWNER_ID.toString();
 const CHANNEL_TYPE = 0;
 const DM_TYPE = 1;
+const EMBED_LOAD_TIME = 2000; // in milliseconds
 
 // Create a new client instance
 const client = new Client({
@@ -51,7 +52,10 @@ client.on("messageCreate", async (message) => {
   // remaining functions need Authorization of Owner
   if (message.author.id !== OWNER_ID) return;
   if (message.channelId == HEAD_CHANNEL) {
-    return HandleNewMeme(message, client);
+    // needs time for the embed object to load in messages object
+    setTimeout(() => {
+      return HandleNewMeme(message, client);
+    }, EMBED_LOAD_TIME);
   }
   if (message.channel.type == CHANNEL_TYPE) {
     return HandleChannelMessages(message);
