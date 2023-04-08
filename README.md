@@ -47,6 +47,11 @@ $ npm run start
 - Data is persistent, delete `discord.db` file and run the program again if you wish to refresh the data.
 - Adjust `EMBED_LOAD_TIME` in `/src/index.js` depending on how long it takes for an embed to load / or based on performance. Default is 2 seconds.
 
+## 💀 Troubleshooting
+
+- if you encounter any issues while running `npm install` consider deleting `package-lock.json` and trying again, or upgrade your version of node and npm.
+
+
 P.S Please star this repository if you found it helpful 😊.
 
 Happy Meme Reposting 🥳
