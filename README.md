@@ -1,7 +1,21 @@
-# 🤖 Meme/Image Reposting Discord Bot
+# 🤖 Meme/Media Reposting Discord Bot
 
-This bot reposts memes in the form of images across guild channels and user dms
+This bot reposts media in the form of images across guild channels and user dms
 depending on owner and user preferences.
+
+## 🧐 Reposting Capabilities
+
+Currently supported media:
+- Image uploads (jpeg, png, gif, anything that embeds)
+- Youtube video links
+- Reddit video links
+- Tenor gifs
+- discord video attachment links
+
+Media that is yet to be tested:
+- video uploads
+- reddit image links
+- instagram / tik tok / facebook video links
 
 ## 🧑‍💻 How to use?
 
@@ -32,5 +46,7 @@ $ npm run start
 - `npm run start` will automatically create and initialize an sqlite3 database in `/data/discord.db` upon running for the first time.
 - Data is persistent, delete `discord.db` file and run the program again if you wish to refresh the data.
 - Adjust `EMBED_LOAD_TIME` in `/src/index.js` depending on how long it takes for an embed to load / or based on performance. Default is 2 seconds.
+
+P.S Please star this repository if you found it helpful 😊.
 
 Happy Meme Reposting 🥳
