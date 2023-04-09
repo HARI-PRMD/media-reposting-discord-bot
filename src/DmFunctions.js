@@ -13,19 +13,30 @@ function HandleDmMessages(message) {
   }
 }
 
-function AddFollowerDm(userId, message) {
-  if (!AppendId("dms", userId)) {
-    return message.reply("error occurred while adding dm to follower list");
+async function AddFollowerDm(userId, message) {
+  if (!(await AppendId("dms", userId))) {
+    return message.reply(
+      "Failed to add: " +
+        message.author.username +
+        " already exists in follower list."
+    );
   }
-  console.log("added id: " + userId);
-  return message.reply("Added you to follower list.");
+  return message.reply(
+    "Successfully added: " + message.author.username + " to follower list."
+  );
 }
 
-function RemoveFollowerDm(userId, message) {
-  if (!RemoveId("dms", userId)) {
-    return message.reply("error occurred while removing dm from follower list");
+async function RemoveFollowerDm(userId, message) {
+  if (!(await RemoveId("dms", userId))) {
+    return message.reply(
+      "Failed to remove: " +
+        message.author.username +
+        " does not exist in follower list."
+    );
   }
-  return message.reply("Removed you from follower list.");
+  return message.reply(
+    "Successfully removed: " + message.author.username + " from follower list."
+  );
 }
 
 async function SendAllDms(ImageUrl, client) {
