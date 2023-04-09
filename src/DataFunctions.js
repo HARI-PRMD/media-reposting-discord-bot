@@ -8,8 +8,6 @@ let database = new sqlite3.Database(
 
 // initializes tables if they do not already exist
 function InitTables() {
-  // database.run(`CREATE TABLE IF NOT EXISTS channels (ID TEXT PRIMARY KEY)`);
-  // database.run(`CREATE TABLE IF NOT EXISTS dms (ID TEXT PRIMARY KEY)`);
   database.serialize(() => {
     database
       .prepare(`CREATE TABLE IF NOT EXISTS channels (ID TEXT PRIMARY KEY)`)
@@ -37,9 +35,11 @@ function AppendId(table, id) {
           console.log(err.message);
         }
         console.log(`ID ${id} inserted into ${table}`);
+        return true;
       });
     } else {
       console.log(`ID ${id} already exists in ${table}`);
+      return false;
     }
   });
   return true;
@@ -59,9 +59,11 @@ function RemoveId(table, id) {
           console.log(err.message);
         }
         console.log(`ID ${id} removed from ${table}`);
+        return true;
       });
     } else {
       console.log(`ID ${id} does not exist in ${table}`);
+      return false;
     }
   });
 }

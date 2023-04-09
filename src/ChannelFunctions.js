@@ -14,12 +14,20 @@ function HandleChannelMessages(message) {
 }
 
 function AddFollowerChannel(channelId, message) {
-  AppendId("channels", channelId);
+  if (!AppendId("channels", channelId)) {
+    return message.reply(
+      "error occurred while adding channel to follower list"
+    );
+  }
   return message.reply("Added #" + message.channel.name + " to follower list.");
 }
 
 function RemoveFollowerChannel(channelId, message) {
-  RemoveId("channels", channelId);
+  if (!RemoveId("channels", channelId)) {
+    return message.reply(
+      "error occurred while removing channel from follower list"
+    );
+  }
   return message.reply(
     "Removed #" + message.channel.name + " from follower list."
   );
