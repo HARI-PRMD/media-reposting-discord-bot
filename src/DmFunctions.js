@@ -14,13 +14,17 @@ function HandleDmMessages(message) {
 }
 
 function AddFollowerDm(userId, message) {
-  AppendId("dms", userId);
+  if (!AppendId("dms", userId)) {
+    return message.reply("error occurred while adding dm to follower list");
+  }
   console.log("added id: " + userId);
   return message.reply("Added you to follower list.");
 }
 
 function RemoveFollowerDm(userId, message) {
-  RemoveId("dms", userId);
+  if (!RemoveId("dms", userId)) {
+    return message.reply("error occurred while removing dm from follower list");
+  }
   return message.reply("Removed you from follower list.");
 }
 
