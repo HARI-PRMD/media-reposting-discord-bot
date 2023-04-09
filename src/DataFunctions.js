@@ -23,48 +23,54 @@ function InitTables() {
 function AppendId(table, id) {
   const selectSql = `SELECT COUNT(*) AS count FROM ${table} WHERE ID = ?`;
   const insertSql = `INSERT INTO ${table} (ID) VALUES (?)`;
-
-  database.get(selectSql, [id.toString()], (err, row) => {
-    if (err) {
-      console.log(err.message);
-    }
-    if (row.count == 0) {
-      // inserts the id into the table
-      database.run(insertSql, [id], (err) => {
-        if (err) {
-          console.log(err.message);
-        }
-        console.log(`ID ${id} inserted into ${table}`);
-        return true;
-      });
-    } else {
-      console.log(`ID ${id} already exists in ${table}`);
-      return false;
-    }
+  return new Promise((resolve, _reject) => {
+    database.get(selectSql, [id.toString()], (err, row) => {
+      if (err) {
+        console.log(err.message);
+      }
+      if (row.count == 0) {
+        // inserts the id into the table
+        database.run(insertSql, [id], (err) => {
+          if (err) {
+            console.log(err.message);
+          }
+          console.log(`ID ${id} inserted into ${table}`);
+        });
+        // return true if added correctly
+        resolve(true);
+      } else {
+        console.log(`ID ${id} already exists in ${table}`);
+        // return false if error
+        resolve(false);
+      }
+    });
   });
-  return true;
 }
 
 function RemoveId(table, id) {
   const selectSql = `SELECT COUNT(*) AS count FROM ${table} WHERE ID = ?`;
   const removeSql = `DELETE FROM ${table} WHERE ID = ?`;
-  database.get(selectSql, [id], (err, row) => {
-    if (err) {
-      console.log(err.message);
-    }
-    // id value exists in the table
-    if (row.count != 0) {
-      database.run(removeSql, [id], (err) => {
-        if (err) {
-          console.log(err.message);
-        }
-        console.log(`ID ${id} removed from ${table}`);
-        return true;
-      });
-    } else {
-      console.log(`ID ${id} does not exist in ${table}`);
-      return false;
-    }
+  return new Promise((resolve, _reject) => {
+    database.get(selectSql, [id], (err, row) => {
+      if (err) {
+        console.log(err.message);
+      }
+      // id value exists in the table
+      if (row.count != 0) {
+        database.run(removeSql, [id], (err) => {
+          if (err) {
+            console.log(err.message);
+          }
+          console.log(`ID ${id} removed from ${table}`);
+        });
+        // return true if removed correctly
+        resolve(true);
+      } else {
+        console.log(`ID ${id} does not exist in ${table}`);
+        // return false if error
+        resolve(false);
+      }
+    });
   });
 }
 

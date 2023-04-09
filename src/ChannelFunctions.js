@@ -13,23 +13,25 @@ function HandleChannelMessages(message) {
   }
 }
 
-function AddFollowerChannel(channelId, message) {
-  if (!AppendId("channels", channelId)) {
+async function AddFollowerChannel(channelId, message) {
+  if (!(await AppendId("channels", channelId))) {
     return message.reply(
-      "error occurred while adding channel to follower list"
-    );
-  }
-  return message.reply("Added #" + message.channel.name + " to follower list.");
-}
-
-function RemoveFollowerChannel(channelId, message) {
-  if (!RemoveId("channels", channelId)) {
-    return message.reply(
-      "error occurred while removing channel from follower list"
+      "Failed to add: Channel already exists in follower list."
     );
   }
   return message.reply(
-    "Removed #" + message.channel.name + " from follower list."
+    "Successfully added: #" + message.channel.name + " to follower list."
+  );
+}
+
+async function RemoveFollowerChannel(channelId, message) {
+  if (!(await RemoveId("channels", channelId))) {
+    return message.reply(
+      "Failed to remove: This channel does not already exist in follower list."
+    );
+  }
+  return message.reply(
+    "Successfully removed #" + message.channel.name + " from follower list."
   );
 }
 
