@@ -7,9 +7,9 @@ function HandleDmMessages(message) {
         `use \`meow add me\` to receive memes, \`meow remove me\` to stop receiving memes.`
       );
     case "meow add me":
-      return AddFollowerDm(message.channelId, message);
+      return AddFollowerDm(message.author.id, message);
     case "meow remove me":
-      return RemoveFollowerDm(message.channelId, message);
+      return RemoveFollowerDm(message.author.id, message);
   }
 }
 
@@ -43,7 +43,7 @@ async function SendAllDms(ImageUrl, client) {
   if (ImageUrl == undefined) return false;
   const allDms = await GetAllIds("dms");
   for (const id of allDms) {
-    const user = client.users.cache.get(id);
+    const user = await client.users.cache.get(id.toString());
     if (user !== undefined) user.send(ImageUrl);
   }
   return true;
