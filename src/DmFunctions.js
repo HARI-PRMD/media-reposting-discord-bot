@@ -43,7 +43,7 @@ async function SendAllDms(ImageUrl, client) {
   if (ImageUrl == undefined) return false;
   const allDms = await GetAllIds("dms");
   for (const id of allDms) {
-    const user = await client.users.cache.fetch(id.toString());
+    const user = await client.users.fetch(id.toString());
     if (user !== undefined) user.send(ImageUrl);
   }
   return true;
