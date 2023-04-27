@@ -43,8 +43,13 @@ async function SendAllDms(ImageUrl, client) {
   if (ImageUrl == undefined) return false;
   const allDms = await GetAllIds("dms");
   for (const id of allDms) {
-    const user = await client.users.fetch(id.toString());
-    if (user !== undefined) user.send(ImageUrl);
+    try {
+      const user = await client.users.fetch(id.toString());
+      if (user !== undefined) user.send(ImageUrl);
+    } catch (err) {
+      console.log("Experienced error while sending media to " + id);
+      console.log(err);
+    }
   }
   return true;
 }
