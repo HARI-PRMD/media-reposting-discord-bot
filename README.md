@@ -1,5 +1,7 @@
 # 🤖 Meme/Media Reposting Discord Bot
 
+[![Lint & Formatting](https://github.com/HARI-PRMD/meme-sharing-discord-bot/actions/workflows/lint.yml/badge.svg)](https://github.com/HARI-PRMD/meme-sharing-discord-bot/actions/workflows/lint.yml)
+
 This bot reposts media in the form of images across guild channels and user dms
 depending on owner and user preferences.
 
