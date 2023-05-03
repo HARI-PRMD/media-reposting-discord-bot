@@ -1,17 +1,23 @@
-const { Client, Events, GatewayIntentBits, Partials } = require("discord.js");
-const dotenv = require("dotenv");
+import {
+  Client,
+  Events,
+  GatewayIntentBits,
+  Partials,
+  Message,
+  DMChannel,
+  TextChannel,
+} from "discord.js";
+import dotenv from "dotenv";
 dotenv.config();
 
-const { HandleChannelMessages } = require("./ChannelFunctions");
-const { HandleDmMessages } = require("./DmFunctions");
-const { HandleNewMeme } = require("./OwnerFunctions");
-const { database, InitTables } = require("./DataFunctions");
+import { HandleChannelMessages } from "./ChannelFunctions";
+import { HandleDmMessages } from "./DmFunctions";
+import { HandleNewMeme } from "./OwnerFunctions";
+import { database, InitTables } from "./DataFunctions";
 
 // SOME CONSTANTS
-const HEAD_CHANNEL = process.env.HEAD_CHANNEL.toString();
-const OWNER_ID = process.env.OWNER_ID.toString();
-const CHANNEL_TYPE = 0;
-const DM_TYPE = 1;
+const HEAD_CHANNEL = process.env.HEAD_CHANNEL?.toString();
+const OWNER_ID = process.env.OWNER_ID?.toString();
 const EMBED_LOAD_TIME = 2000; // in milliseconds
 
 // Create a new client instance
@@ -33,21 +39,21 @@ async function initialize() {
 
 // When the client is ready, run this code (only once)
 // We use 'c' for the event parameter to keep it separate from the already defined 'client'
-client.once(Events.ClientReady, async (c) => {
+client.once(Events.ClientReady, async (c: Client) => {
   // initialize db and tables
   initialize();
-  console.log(`Ready! Logged in as ${c.user.tag}`);
+  console.log(`Ready! Logged in as ${c.user?.tag}`);
 });
 
 // Log in to Discord with your client's token
 client.login(process.env.TOKEN);
 
 // do functions based on messages
-client.on("messageCreate", async (message) => {
+client.on("messageCreate", async (message: Message): Promise<any> => {
   if (message.author.bot) return;
   // dm functions are available to anyone
-  if (message.channel.type == DM_TYPE) {
-    HandleDmMessages(message);
+  if (message.channel instanceof DMChannel) {
+    HandleDmMessages(message as Message & { channel: DMChannel });
   }
   // remaining functions need Authorization of Owner
   if (message.author.id !== OWNER_ID) return;
@@ -57,7 +63,7 @@ client.on("messageCreate", async (message) => {
       return HandleNewMeme(message, client);
     }, EMBED_LOAD_TIME);
   }
-  if (message.channel.type == CHANNEL_TYPE) {
-    return HandleChannelMessages(message);
+  if (message.channel instanceof TextChannel) {
+    return HandleChannelMessages(message as Message & { channel: TextChannel });
   }
 });
