@@ -1,7 +1,8 @@
-const { SendAllChannels } = require("./ChannelFunctions");
-const { SendAllDms } = require("./DmFunctions");
+import { Client, Message } from "discord.js";
+import { SendAllChannels } from "./ChannelFunctions";
+import { SendAllDms } from "./DmFunctions";
 
-function HandleNewMeme(message, client) {
+export const HandleNewMeme = (message: Message, client: Client) => {
   // send embedded image or gif or any other embedded media link
   if (message.embeds.length > 0) {
     SendAllChannels(message.embeds[0].data.url, client);
@@ -14,8 +15,4 @@ function HandleNewMeme(message, client) {
       SendAllDms(attachment.url, client);
     });
   }
-}
-
-module.exports = {
-  HandleNewMeme,
 };

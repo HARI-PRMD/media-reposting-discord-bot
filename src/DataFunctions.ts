@@ -1,13 +1,14 @@
-const sqlite3 = require("sqlite3").verbose();
+// const sqlite3 = require("sqlite3").verbose();
+import * as sqlite3 from "sqlite3";
 
 // global database object
-let database = new sqlite3.Database(
+export const database = new sqlite3.Database(
   "./data/discord.db",
   sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE
 );
 
 // initializes tables if they do not already exist
-function InitTables() {
+export const InitTables = () => {
   database.serialize(() => {
     database
       .prepare(`CREATE TABLE IF NOT EXISTS channels (ID TEXT PRIMARY KEY)`)
@@ -18,19 +19,19 @@ function InitTables() {
       .run()
       .finalize();
   });
-}
+};
 
-function AppendId(table, id) {
+export const AppendId = (table: string, id: string) => {
   const selectSql = `SELECT COUNT(*) AS count FROM ${table} WHERE ID = ?`;
   const insertSql = `INSERT INTO ${table} (ID) VALUES (?)`;
-  return new Promise((resolve, _reject) => {
-    database.get(selectSql, [id.toString()], (err, row) => {
+  return new Promise((resolve) => {
+    database.get(selectSql, [id.toString()], (err: Error, row: any) => {
       if (err) {
         console.log(err.message);
       }
       if (row.count == 0) {
         // inserts the id into the table
-        database.run(insertSql, [id], (err) => {
+        database.run(insertSql, [id], (err: Error) => {
           if (err) {
             console.log(err.message);
           }
@@ -45,19 +46,19 @@ function AppendId(table, id) {
       }
     });
   });
-}
+};
 
-function RemoveId(table, id) {
+export const RemoveId = (table: string, id: string) => {
   const selectSql = `SELECT COUNT(*) AS count FROM ${table} WHERE ID = ?`;
   const removeSql = `DELETE FROM ${table} WHERE ID = ?`;
-  return new Promise((resolve, _reject) => {
-    database.get(selectSql, [id], (err, row) => {
+  return new Promise((resolve) => {
+    database.get(selectSql, [id], (err: Error, row: any) => {
       if (err) {
         console.log(err.message);
       }
       // id value exists in the table
       if (row.count != 0) {
-        database.run(removeSql, [id], (err) => {
+        database.run(removeSql, [id], (err: Error) => {
           if (err) {
             console.log(err.message);
           }
@@ -72,37 +73,30 @@ function RemoveId(table, id) {
       }
     });
   });
-}
+};
 
 // returns array of all ids in table
-async function GetAllIds(table) {
-  return new Promise((resolve, reject) => {
+export const GetAllIds = async (
+  table: "dms" | "channels"
+): Promise<string[]> => {
+  return new Promise((resolve) => {
     let IDS = [];
-    database.all(`SELECT ID FROM ${table}`, (err, rows) => {
+    database.all(`SELECT ID FROM ${table}`, (err: Error, rows: any) => {
       if (err) {
         console.log(err.message);
       }
-      IDS = rows.map((row) => row.ID);
+      IDS = rows.map((row: any) => row.ID);
       resolve(IDS);
     });
   });
-}
+};
 
 // close the database connection
-function CloseDb() {
-  database.close((err) => {
+export const CloseDb = () => {
+  database.close((err: Error | null) => {
     if (err) {
       return console.error(err.message);
     }
     console.log("Closed the database connection.");
   });
-}
-
-module.exports = {
-  database,
-  InitTables,
-  AppendId,
-  RemoveId,
-  GetAllIds,
-  CloseDb,
 };

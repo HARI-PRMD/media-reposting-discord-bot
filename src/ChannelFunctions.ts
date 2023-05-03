@@ -1,6 +1,9 @@
-const { RemoveId, AppendId, GetAllIds } = require("./DataFunctions");
+import { Channel, Client, Message, TextChannel } from "discord.js";
+import { RemoveId, AppendId, GetAllIds } from "./DataFunctions";
 
-function HandleChannelMessages(message) {
+export const HandleChannelMessages = (
+  message: Message & { channel: TextChannel }
+) => {
   switch (message.content) {
     case "meow help":
       return message.reply(
@@ -11,9 +14,12 @@ function HandleChannelMessages(message) {
     case "meow remove this":
       return RemoveFollowerChannel(message.channelId, message);
   }
-}
+};
 
-async function AddFollowerChannel(channelId, message) {
+const AddFollowerChannel = async (
+  channelId: string,
+  message: Message & { channel: TextChannel }
+) => {
   if (!(await AppendId("channels", channelId))) {
     return message.reply(
       "Failed to add: Channel already exists in follower list."
@@ -22,9 +28,12 @@ async function AddFollowerChannel(channelId, message) {
   return message.reply(
     "Successfully added: #" + message.channel.name + " to follower list."
   );
-}
+};
 
-async function RemoveFollowerChannel(channelId, message) {
+const RemoveFollowerChannel = async (
+  channelId: string,
+  message: Message & { channel: TextChannel }
+) => {
   if (!(await RemoveId("channels", channelId))) {
     return message.reply(
       "Failed to remove: This channel does not already exist in follower list."
@@ -33,19 +42,16 @@ async function RemoveFollowerChannel(channelId, message) {
   return message.reply(
     "Successfully removed #" + message.channel.name + " from follower list."
   );
-}
+};
 
-async function SendAllChannels(ImageUrl, client) {
-  if (ImageUrl == undefined) return false;
+export async function SendAllChannels(
+  ImageUrl: string | undefined,
+  client: Client
+) {
+  if (ImageUrl == undefined) return;
   const allChannels = await GetAllIds("channels");
   for (const id of allChannels) {
-    const channel = client.channels.cache.get(id);
-    if (channel !== undefined) channel.send(ImageUrl);
+    const channel: Channel | undefined = client.channels.cache.get(id);
+    if (channel !== undefined) (channel as TextChannel).send(ImageUrl);
   }
-  return true;
 }
-
-module.exports = {
-  HandleChannelMessages,
-  SendAllChannels,
-};
