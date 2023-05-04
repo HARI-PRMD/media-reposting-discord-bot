@@ -15,19 +15,19 @@ dotenv.config();
 
 import { AddFollowerChannel, RemoveFollowerChannel } from "./ChannelFunctions";
 import { AddFollowerDm, RemoveFollowerDm } from "./DmFunctions";
-import { HandleNewMeme } from "./OwnerFunctions";
+import { CheckForValidVariables, HandleNewMeme } from "./OwnerFunctions";
 import { InitTables } from "./DataFunctions";
 
 // SOME CONSTANTS
-const TOKEN = process.env.TOKEN;
-const CLIENT_ID = process.env.CLIENT_ID;
+const TOKEN = process.env?.TOKEN;
+const CLIENT_ID = process.env?.CLIENT_ID;
 const HEAD_CHANNEL = process.env.HEAD_CHANNEL?.toString();
 const OWNER_ID = process.env.OWNER_ID?.toString();
 const EMBED_LOAD_TIME = 2000; // in milliseconds
 
-const rest = new REST({ version: "9" }).setToken(
-  "MTA5Mjk4OTEwMjQ4NTQxMzg5OQ.GHRj8D.kL-GeHsv-paCZd1s-YnyYb5RZQfHH7vFJ1JHhI"
-);
+CheckForValidVariables(TOKEN, CLIENT_ID, HEAD_CHANNEL, OWNER_ID);
+if (!TOKEN) throw new Error("Missing TOKEN environment variable.");
+const rest = new REST({ version: "9" }).setToken(TOKEN);
 
 // Create a new client instance
 const client = new Client({
@@ -43,15 +43,15 @@ const client = new Client({
 
 const commands = [
   {
-    name: "add",
+    name: "follow",
     description: "Start receiving memes in this channel!",
   },
   {
-    name: "remove",
+    name: "unfollow",
     description: "Stop receiving memes in this channel!",
   },
   {
-    name: "info",
+    name: "about",
     description: "What does this bot do?",
   },
 ];
@@ -104,29 +104,23 @@ client.on("interactionCreate", async (interaction: Interaction) => {
     }
   }
   if (interaction.channel instanceof DMChannel) {
-    if (interaction.commandName === "add") {
+    if (interaction.commandName === "follow") {
       AddFollowerDm(
         interaction.user.id as string,
         interaction as CommandInteraction & { channel: DMChannel }
       );
     }
-    if (interaction.commandName === "remove") {
+    if (interaction.commandName === "unfollow") {
       RemoveFollowerDm(
         interaction.user.id as string,
         interaction as CommandInteraction & { channel: DMChannel }
       );
     }
   }
-  // do the same for dms
-  // if (interaction.commandName === "add") {
-  //   AddFollowerChannel(interaction.channelId as string, interaction);
-  //   await interaction.reply("adding channel");
-  // }
-  // if (interaction.commandName === "remove") {
-  //   await interaction.reply("removing channel");
-  // }
-  if (interaction.commandName === "info") {
-    await interaction.reply("getting info");
+  if (interaction.commandName === "about") {
+    await interaction.reply(
+      "I am a meme re-posting bot developed by `Hehe#6969` for re-posting his memes to channels and following user's dms! Add me to any server and type `/follow` to start receiving memes in that channel, or type the same in a dm to have memes dm-ed to you 🤖.\nSubmit Feature requests here: https://github.com/HARI-PRMD/meme-sharing-discord-bot/issues ✨."
+    );
   }
 });
 
