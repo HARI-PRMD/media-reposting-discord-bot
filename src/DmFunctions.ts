@@ -1,40 +1,27 @@
-import { Client, DMChannel, Message, User } from "discord.js";
+import { Client, CommandInteraction, DMChannel, User } from "discord.js";
 import { GetAllIds, AppendId, RemoveId } from "./DataFunctions";
-
-export const HandleDmMessages = (message: Message & { channel: DMChannel }) => {
-  switch (message.content) {
-    case "meow help":
-      return message.reply(
-        `use \`meow add me\` to receive memes, \`meow remove me\` to stop receiving memes.`
-      );
-    case "meow add me":
-      return AddFollowerDm(message.author.id as string, message);
-    case "meow remove me":
-      return RemoveFollowerDm(message.author.id as string, message);
-  }
-};
 
 export const AddFollowerDm = async (
   userId: string,
-  message: Message & { channel: DMChannel }
+  interaction: CommandInteraction & { channel: DMChannel }
 ) => {
   if (!(await AppendId("dms", userId))) {
-    return message.reply(
+    return interaction.reply(
       "Failed to add " +
         "`" +
-        message.author.username +
+        interaction.user.username +
         "#" +
-        message.author.discriminator +
+        interaction.user.discriminator +
         "`" +
         " already exists in follower list."
     );
   }
-  return message.reply(
+  return interaction.reply(
     "Successfully added " +
       "`" +
-      message.author.username +
+      interaction.user.username +
       "#" +
-      message.author.discriminator +
+      interaction.user.discriminator +
       "`" +
       " to follower list."
   );
@@ -42,25 +29,25 @@ export const AddFollowerDm = async (
 
 export const RemoveFollowerDm = async (
   userId: string,
-  message: Message & { channel: DMChannel }
+  interaction: CommandInteraction & { channel: DMChannel }
 ) => {
   if (!(await RemoveId("dms", userId))) {
-    return message.reply(
+    return interaction.reply(
       "Failed to remove: " +
         "`" +
-        message.author.username +
+        interaction.user.username +
         "#" +
-        message.author.discriminator +
+        interaction.user.discriminator +
         "`" +
         " does not exist in follower list."
     );
   }
-  return message.reply(
+  return interaction.reply(
     "Successfully removed " +
       "`" +
-      message.author.username +
+      interaction.user.username +
       "#" +
-      message.author.discriminator +
+      interaction.user.discriminator +
       "`" +
       " from follower list."
   );

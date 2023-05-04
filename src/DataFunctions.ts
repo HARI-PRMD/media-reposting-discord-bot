@@ -19,6 +19,7 @@ export const InitTables = () => {
       .run()
       .finalize();
   });
+  console.log("Initialized Database");
 };
 
 export const AppendId = (table: string, id: string) => {

@@ -16,3 +16,23 @@ export const HandleNewMeme = (message: Message, client: Client) => {
     });
   }
 };
+
+export const CheckForValidVariables = (
+  TOKEN: string | undefined,
+  CLIENT_ID: string | undefined,
+  HEAD_CHANNEL: string | undefined,
+  OWNER_ID: string | undefined
+) => {
+  if (!TOKEN) {
+    throw new Error("Missing TOKEN environment variable.");
+  }
+  if (!CLIENT_ID) {
+    throw new Error("Missing TOKEN environment variable.");
+  }
+  if (!HEAD_CHANNEL) {
+    throw new Error("Missing TOKEN environment variable.");
+  }
+  if (!OWNER_ID) {
+    throw new Error("Missing TOKEN environment variable.");
+  }
+};
