@@ -90,13 +90,13 @@ client.on("messageCreate", async (message: Message): Promise<any> => {
 client.on("interactionCreate", async (interaction: Interaction) => {
   if (!interaction.isCommand()) return;
   if (interaction.channel instanceof TextChannel) {
-    if (interaction.commandName === "add") {
+    if (interaction.commandName === "follow") {
       AddFollowerChannel(
         interaction.channelId as string,
         interaction as CommandInteraction & { channel: TextChannel }
       );
     }
-    if (interaction.commandName === "remove") {
+    if (interaction.commandName === "unfollow") {
       RemoveFollowerChannel(
         interaction.channelId as string,
         interaction as CommandInteraction & { channel: TextChannel }
